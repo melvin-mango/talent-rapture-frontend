@@ -2,6 +2,7 @@
  import Hero from "./Sections/Hero";
 import Aboutus from "./Sections/Aboutus";
 import Services from "./Sections/Services";
+import Events from "./Sections/Events";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Hero/>
       <Aboutus/>
       <Services/>
+      <Events/>
     </div>
   );
 }
