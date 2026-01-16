@@ -112,7 +112,7 @@ const EventCard = ({ event }: { event: Event }) => {
 
 export default function Events() {
     return(
-        <div className="w-full bg-[#F3DEBA] items-center justify-center flex ">
+        <div className="w-full bg-[#F3DEBA] items-center justify-center flex " id="events">
             <div className="w-full xl:w-7xl p-4 flex flex-col gap-y-5">
                 <Header heading={'Events'}/>
                 <p className="text-xl text-black font-light">

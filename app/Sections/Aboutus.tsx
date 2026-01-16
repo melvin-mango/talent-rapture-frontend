@@ -27,7 +27,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
     }, 2200);
   };
     return(
-        <div className="w-full p-4 flex items-start justify-center">
+        <div className="w-full p-4 flex items-start justify-center" id="about-us">
             <div className="w-full xl:w-7xl">
                 <Header heading="About Us"/>
                 <div className="w-full flex flex-col md:flex-row items-start justify-center">

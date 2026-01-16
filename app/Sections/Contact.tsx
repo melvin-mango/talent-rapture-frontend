@@ -1,7 +1,7 @@
 import Header from "../components/Header"
 export default function Contact() {
     return(
-        <div className="w-full bg-[#F3DEBA] flex items-center justify-center">
+        <div className="w-full bg-[#F3DEBA] flex items-center justify-center" id="contact-us">
             <div className="w-full xl:w-7xl flex flex-col p-4 gap-y-5">
                 <Header heading={'Contact Us'}/>
                 <p className="text-xl text-black font-light">Send us a message and let's create something amazing together.</p>

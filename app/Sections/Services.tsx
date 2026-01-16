@@ -21,7 +21,7 @@ export default function Services () {
         }, 2200);
     }
     return(
-        <div className="w-full flex flex-col items-center justify-center">
+        <div className="w-full flex flex-col items-center justify-center" id="services">
             <div className="w-full xl:w-7xl p-4">
                 <Header heading="Our Services"/>
             </div>

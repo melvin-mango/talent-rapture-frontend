@@ -110,7 +110,7 @@ export default function Testimonial() {
     };
 
     return(
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center" id="testimonials">
             <div className="w-full p-4 flex flex-col xl:w-7xl gap-y-5">
                 <Header heading={'Testimonials'}/>
                 <p className="text-xl text-black font-light">What others say about us</p>

@@ -10,7 +10,19 @@ export default function Navbar(){
 
         <div className="lg:hidden">
         <div className="w-full flex items-center justify-between h-20 p-4 bg-black">
-            <Image src="/img/logo3.png" alt="" className="w-40" width={500} height={200} />
+            <Image src="/img/logo3.png" alt="" className="w-40 cursor-pointer" width={500} height={200} 
+             onClick={() => {
+                        const el = document.getElementById('home');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}/>
             <button onClick={() => {setIsMobileMenu(!isMobileMenu)}}>
                 <Menu className="text-white"/>
             </button>
@@ -23,23 +35,83 @@ export default function Navbar(){
         }`}>
 
                 <div className="w-full md:w-2/3 h-auto flex flex-col gap-y-3">
-                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white">
+                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white"
+                    onClick={() => {
+                        const el = document.getElementById('about-us');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}>
                         <span className="text-white"> About Us </span>
                     </button>
 
-                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white">
+                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white" 
+                    onClick={() => {
+                        const el = document.getElementById('services');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}>
                         <span className="text-white"> Our Services </span>
                     </button>
 
-                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white">
+                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white" 
+                    onClick={() => {
+                        const el = document.getElementById('events');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"end",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}>
                         <span className="text-white"> Events </span>
                     </button>
 
-                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white">
+                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white" 
+                    onClick={() => {
+                        const el = document.getElementById('testimonials');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"end",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}>
                         <span className="text-white"> Testimonials </span>
                     </button>
 
-                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white">
+                    <button className="w-full items-center justify-center flex p-2 border rounded-4xl border-white" 
+                    onClick={() => {
+                        const el = document.getElementById('contact-us');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"end",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}>
                         <span className="text-white"> Contact Us </span>
                     </button>
                     
@@ -64,22 +136,94 @@ export default function Navbar(){
         <div className="hidden lg:flex w-full items-center justify-center bg-black ">
             <div className="w-7xl flex items-center justify-between h-20 p-4 bg-black">
 
-                <Image src="/img/logo3.png" alt="" className="w-40" width={500} height={200} />
+                <Image src="/img/logo3.png" alt="" className="w-40 cursor-pointer" width={500} height={200} 
+                onClick={() => {
+                        const el = document.getElementById('home');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        setIsMobileMenu(false);
+                    }}/>
 
                 <div className=" flex items-center justify-center gap-x-2">
-                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs ">
+                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs "
+                    onClick={() => {
+                        const el = document.getElementById('about-us');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        
+                    }}>
                         <span className=""> About Us </span>
                     </button>
-                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs ">
+                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs "
+                    onClick={() => {
+                        const el = document.getElementById('services');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        
+                    }}>
                         <span className=""> Our Services </span>
                     </button>
-                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs ">
+                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs "
+                    onClick={() => {
+                        const el = document.getElementById('events');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"start",
+                                }
+                            );
+                        }
+                        
+                    }}>
                         <span className=""> Events </span>
                     </button>
-                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs ">
+                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs "
+                    onClick={() => {
+                        const el = document.getElementById('testimonials');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"end",
+                                }
+                            );
+                        }
+                        
+                    }}>
                         <span className=""> Testimonals </span>
                     </button>
-                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs ">
+                    <button className="px-4 py-2 items-center justify-center flex p-2 border rounded-4xl border-white hover:bg-[#FF7F00] hover:border-[#FF7F00] text-white hover:text-black outline-none transition-all duration-300 ease-in-out cursor-pointer text-xs "
+                    onClick={() => {
+                        const el = document.getElementById('contact-us');
+                        if (el) {
+                            el.scrollIntoView(
+                                {
+                                    behavior:"smooth",
+                                    block:"end",
+                                }
+                            );
+                        }
+                        
+                    }}>
                         <span className="cursor-pointer"> Contact Us </span>
                     </button>
                 </div>
