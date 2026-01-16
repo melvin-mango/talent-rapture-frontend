@@ -28,7 +28,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
   };
     return(
         <div className="w-full p-4 flex items-start justify-center">
-            <div className="w-full xl:w-7xl p-2">
+            <div className="w-full xl:w-7xl">
                 <Header heading="About Us"/>
                 <div className="w-full flex flex-col md:flex-row items-start justify-center">
                     <div className="w-full md:w-1/2 h-[800px] p-4">
@@ -93,7 +93,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
                         </button>
                     </li>
                 </ul>
-                <div className="relative w-full min-h-[250px] md:min-h-[180px] lg:min-h-[165px] xl:min-h-[150px]">
+                <div className="relative w-full min-h-[120px] md:min-h-[100px] lg:min-h-[80px] xl:min-h-[60px]">
                     {/* Mission */}
                     <div
                         className={`absolute left-0 top-0 w-full transition-opacity duration-300 ${

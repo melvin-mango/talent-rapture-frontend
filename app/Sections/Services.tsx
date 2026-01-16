@@ -72,13 +72,13 @@ export default function Services () {
                 
             </div>
 
-            <div className="w-full xl:w-7xl p-2 gap-y-4 mt-5 mb-3 flex flex-col items-center justify-center text-center">
+            <div className="w-full xl:w-7xl p-4 gap-y-4 mt-5 mb-3 flex flex-col items-center justify-center text-center">
                 <h1 className="text-2xl text-black font-semibold">Workshops</h1>
                 <p className="text-xl text-black font-light">Talent Rapture organizes capacity building workshops through targeted, tailor-made one-on-one coaching in areas of:</p>
 
             </div>
 
-            <div className="w-full xl:w-7xl p-2 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+            <div className="w-full xl:w-7xl p-4 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
                     <div className="service brand inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
                          <div className="absolute serv w-full p-3 h-full items-center justify-center flex flex-col gap-y-4 text-center rounded-4xl ">
                             <FontAwesomeIcon

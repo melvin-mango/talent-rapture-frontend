@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 
 export default function Navbar(){
-    const [isMobileMenu, setIsMobileMenu] = useState(true);
+    const [isMobileMenu, setIsMobileMenu] = useState(false);
     return(
         <div className="fixed w-full z-80 top-0">
 
