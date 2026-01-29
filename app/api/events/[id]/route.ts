@@ -6,7 +6,7 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!STRAPI_URL) {
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Fetch specific event from Strapi with media relations
     const strapiResponse = await fetch(
