@@ -51,7 +51,7 @@ export default function Footer() {
                 </div>
             </div>
             <div className="w-full p-5 border-t border-[#FF7F00] text-white flex items-center justify-center">
-                Talent Rapture © 2025 All Rights Reserved
+                Talent Rapture © 2026 All Rights Reserved
             </div>
 
         </div>
