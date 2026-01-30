@@ -4,6 +4,7 @@ import { RegisterRequest, ApiResponse, AuthResponse } from "@/lib/types";
 import { handleStrapiError } from "@/lib/utils";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 
 export async function POST(request: NextRequest) {
   try {
@@ -93,7 +94,9 @@ export async function POST(request: NextRequest) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${authData.jwt}`,
+            ...(STRAPI_ADMIN_TOKEN && {
+              Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
+            }),
           },
           body: JSON.stringify({
             firstName: body.firstName,
