@@ -1,9 +1,36 @@
 // app/api/event-registrations/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { EventRegistration, ApiResponse } from "@/lib/types";
+import jwt from "jsonwebtoken";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
+const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
+
+// Helper function to verify user ownership of registration
+async function verifyOwnership(registrationId: string, userId: string): Promise<boolean> {
+  try {
+    const response = await fetch(
+      `${STRAPI_URL}/api/event-registrations/${registrationId}?populate[users_permissions_user][fields][0]=id`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...(STRAPI_ADMIN_TOKEN && {
+            Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
+          }),
+        },
+      }
+    );
+
+    if (!response.ok) return false;
+
+    const data: { data: any } = await response.json();
+    return data.data?.users_permissions_user?.id?.toString() === userId;
+  } catch (error) {
+    console.error("Ownership verification error:", error);
+    return false;
+  }
+}
 
 // GET - Fetch a specific registration
 export async function GET(
@@ -72,7 +99,7 @@ export async function GET(
   }
 }
 
-// PATCH - Update a registration
+// PATCH - Update a registration (only owner can update)
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -88,8 +115,58 @@ export async function PATCH(
       );
     }
 
+    // Get user ID from JWT token
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "");
+    
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no token provided",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    let userId: string | null = null;
+    try {
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      userId = decoded.id || decoded.sub;
+    } catch (error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - invalid token",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no user ID in token",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
+
+    // Verify user owns this registration
+    const isOwner = await verifyOwnership(id, userId as string);
+    if (!isOwner) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Forbidden - you can only update your own registrations",
+        } as ApiResponse<null>,
+        { status: 403 }
+      );
+    }
 
     // Validation
     if (!body.phone && !body.physicalAddress && !body.numberOfParticipants) {
@@ -104,7 +181,7 @@ export async function PATCH(
 
     const fetchUrl = `${STRAPI_URL}/api/event-registrations/${id}`;
     
-    console.log("Updating registration at:", fetchUrl);
+    console.log("Updating registration at:", fetchUrl, "by user:", userId);
 
     const strapiResponse = await fetch(fetchUrl, {
       method: "PUT",
@@ -159,7 +236,7 @@ export async function PATCH(
   }
 }
 
-// DELETE - Delete a registration
+// DELETE - Delete a registration (only owner can delete)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -175,9 +252,59 @@ export async function DELETE(
       );
     }
 
+    // Get user ID from JWT token
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "");
+    
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no token provided",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    let userId: string | null = null;
+    try {
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      userId = decoded.id || decoded.sub;
+    } catch (error) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - invalid token",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no user ID in token",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
 
-    console.log("Delete request received for ID:", id);
+    // Verify user owns this registration
+    const isOwner = await verifyOwnership(id, userId as string);
+    if (!isOwner) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Forbidden - you can only delete your own registrations",
+        } as ApiResponse<null>,
+        { status: 403 }
+      );
+    }
+
+    console.log("Delete request received for ID:", id, "by user:", userId);
 
     const fetchUrl = `${STRAPI_URL}/api/event-registrations/${id}`;
     

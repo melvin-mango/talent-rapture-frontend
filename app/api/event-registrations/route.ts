@@ -1,11 +1,13 @@
 // app/api/event-registrations/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { EventRegistration, EventRegistrationRequest, EventRegistrationsResponse, ApiResponse } from "@/lib/types";
+import jwt from "jsonwebtoken";
 
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
+const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 
-// GET - Fetch user's registrations for a specific event
+// GET - Fetch user's registrations for a specific event (filtered by current user)
 export async function GET(request: NextRequest) {
   try {
     if (!STRAPI_URL) {
@@ -15,6 +17,45 @@ export async function GET(request: NextRequest) {
           error: "Strapi URL is not configured",
         } as ApiResponse<null>,
         { status: 500 }
+      );
+    }
+
+    // Get user ID from JWT token
+    const authHeader = request.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "");
+    
+    if (!token) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no token provided",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    let userId: string | null = null;
+    try {
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      userId = decoded.id || decoded.sub;
+    } catch (error) {
+      console.error("JWT verification failed:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - invalid token",
+        } as ApiResponse<null>,
+        { status: 401 }
+      );
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - no user ID in token",
+        } as ApiResponse<null>,
+        { status: 401 }
       );
     }
 
@@ -31,9 +72,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations?filters[event][documentId][$eq]=${eventId}&populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email&sort=createdAt:desc`;
+    // Fetch ONLY the current user's registrations for this event
+    const fetchUrl = `${STRAPI_URL}/api/event-registrations?filters[event][documentId][$eq]=${eventId}&filters[users_permissions_user][id][$eq]=${userId}&populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email&sort=createdAt:desc`;
     
-    console.log("Fetching registrations from:", fetchUrl);
+    console.log("Fetching registrations for user:", userId, "event:", eventId);
 
     const strapiResponse = await fetch(fetchUrl, {
       method: "GET",
