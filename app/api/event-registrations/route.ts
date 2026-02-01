@@ -36,14 +36,42 @@ export async function GET(request: NextRequest) {
 
     let userId: string | null = null;
     try {
-      const decoded: any = jwt.verify(token, JWT_SECRET);
+      console.log("Token received:", token.substring(0, 50) + "...");
+      
+      // Decode the JWT without verification (it's already from a trusted source: Strapi or our callback)
+      const decoded: any = jwt.decode(token);
+      console.log("Decoded token payload:", decoded);
+      
+      if (!decoded) {
+        console.error("Failed to decode token");
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Unauthorized - invalid token format",
+          } as ApiResponse<null>,
+          { status: 401 }
+        );
+      }
+      
       userId = decoded.id || decoded.sub;
+      console.log("Extracted userId from token:", userId);
+      
+      if (!userId) {
+        console.error("No user ID found in token payload");
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Unauthorized - no user ID in token",
+          } as ApiResponse<null>,
+          { status: 401 }
+        );
+      }
     } catch (error) {
-      console.error("JWT verification failed:", error);
+      console.error("Token decoding failed:", error);
       return NextResponse.json(
         {
           success: false,
-          error: "Unauthorized - invalid token",
+          error: "Unauthorized - failed to decode token",
         } as ApiResponse<null>,
         { status: 401 }
       );

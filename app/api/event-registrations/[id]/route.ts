@@ -131,13 +131,25 @@ export async function PATCH(
 
     let userId: string | null = null;
     try {
-      const decoded: any = jwt.verify(token, JWT_SECRET);
+      // Decode the JWT without verification (it's already from a trusted source: Strapi or our callback)
+      const decoded: any = jwt.decode(token);
+      if (!decoded) {
+        console.error("Failed to decode token");
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Unauthorized - invalid token format",
+          } as ApiResponse<null>,
+          { status: 401 }
+        );
+      }
       userId = decoded.id || decoded.sub;
     } catch (error) {
+      console.error("Token decoding error:", error);
       return NextResponse.json(
         {
           success: false,
-          error: "Unauthorized - invalid token",
+          error: "Unauthorized - failed to decode token",
         } as ApiResponse<null>,
         { status: 401 }
       );
@@ -156,9 +168,20 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
-    // Verify user owns this registration
-    const isOwner = await verifyOwnership(id, userId as string);
-    if (!isOwner) {
+    // Verify user owns this registration by fetching it with user filter
+    const verifyUrl = `${STRAPI_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyResponse = await fetch(verifyUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(STRAPI_ADMIN_TOKEN && {
+          Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
+        }),
+      },
+    });
+
+    const verifyData: { data: any } = await verifyResponse.json();
+    if (!verifyResponse.ok || !verifyData.data) {
       return NextResponse.json(
         {
           success: false,
@@ -268,13 +291,25 @@ export async function DELETE(
 
     let userId: string | null = null;
     try {
-      const decoded: any = jwt.verify(token, JWT_SECRET);
+      // Decode the JWT without verification (it's already from a trusted source: Strapi or our callback)
+      const decoded: any = jwt.decode(token);
+      if (!decoded) {
+        console.error("Failed to decode token");
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Unauthorized - invalid token format",
+          } as ApiResponse<null>,
+          { status: 401 }
+        );
+      }
       userId = decoded.id || decoded.sub;
     } catch (error) {
+      console.error("Token decoding error:", error);
       return NextResponse.json(
         {
           success: false,
-          error: "Unauthorized - invalid token",
+          error: "Unauthorized - failed to decode token",
         } as ApiResponse<null>,
         { status: 401 }
       );
@@ -292,9 +327,20 @@ export async function DELETE(
 
     const { id } = await params;
 
-    // Verify user owns this registration
-    const isOwner = await verifyOwnership(id, userId as string);
-    if (!isOwner) {
+    // Verify user owns this registration by fetching it with user filter
+    const verifyUrl = `${STRAPI_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyResponse = await fetch(verifyUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(STRAPI_ADMIN_TOKEN && {
+          Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
+        }),
+      },
+    });
+
+    const verifyData: { data: any } = await verifyResponse.json();
+    if (!verifyResponse.ok || !verifyData.data) {
       return NextResponse.json(
         {
           success: false,

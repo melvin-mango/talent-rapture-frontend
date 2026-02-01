@@ -150,7 +150,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="relative w-full max-w-sm sm:max-w-md bg-white rounded-lg shadow-xl my-8 sm:my-0 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-sm sm:max-w-md bg-white rounded-lg shadow-xl my-8 sm:my-0 flex flex-col max-h-[90vh] text-black">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -167,7 +167,7 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="px-4 sm:px-6 pb-6 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="px-4 sm:px-6 pb-6 overflow-y-auto flex-1 text-black">
           {error && (
             <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
               {error}
@@ -185,7 +185,6 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 value={formData.firstName}
                 onChange={handleChange}
                 className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-                placeholder="John"
               />
             </div>
             <div>
@@ -198,7 +197,6 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 value={formData.lastName}
                 onChange={handleChange}
                 className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-                placeholder="Doe"
               />
             </div>
           </div>
@@ -213,7 +211,6 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-              placeholder="john@example.com"
             />
           </div>
 
@@ -227,7 +224,6 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-              placeholder="••••••"
             />
           </div>
 
@@ -241,7 +237,6 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               value={formData.confirmPassword}
               onChange={handleChange}
               className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-              placeholder="••••••"
             />
           </div>
 

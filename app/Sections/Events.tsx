@@ -35,18 +35,27 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
     // Check if user has already registered for this event
     const checkRegistration = async () => {
         if (!session?.user) {
+            console.log('No user in session');
             setIsCheckingRegistration(false);
             return;
         }
 
         try {
             const jwt = (session as any).jwt;
+            console.log('Session data:', { 
+                hasSession: !!session,
+                hasUser: !!session?.user,
+                hasJwt: !!jwt,
+                jwtPreview: jwt ? jwt.substring(0, 30) + '...' : 'undefined'
+            });
+            
             if (!jwt) {
-                console.log('No JWT in session');
+                console.log('No JWT in session, returning');
                 setIsCheckingRegistration(false);
                 return;
             }
 
+            console.log('Fetching registrations with JWT for event:', event.documentId);
             const response = await fetch(`/api/event-registrations?eventId=${event.documentId}`, {
                 method: 'GET',
                 headers: {
@@ -55,11 +64,16 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
                 },
             });
 
+            console.log('Registration check response status:', response.status);
+            
             if (response.ok) {
                 const data: ApiResponse<EventRegistration[]> = await response.json();
                 if (data.success && data.data && data.data.length > 0) {
                     setUserRegistration(data.data[0]);
                 }
+            } else {
+                const errorData = await response.json();
+                console.log('Registration check failed:', errorData);
             }
         } catch (error) {
             console.error('Error checking registration:', error);

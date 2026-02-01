@@ -101,7 +101,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="relative w-full max-w-sm sm:max-w-md bg-white rounded-lg shadow-xl my-8 sm:my-0 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-sm sm:max-w-md bg-white rounded-lg shadow-xl my-8 sm:my-0 flex flex-col max-h-[90vh] text-black">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -135,7 +135,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-              placeholder="john@example.com"
             />
           </div>
 
@@ -149,7 +148,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-              placeholder="••••••"
+
             />
           </div>
 
