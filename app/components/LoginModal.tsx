@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { X, Chrome } from "lucide-react";
+import { X, Chrome, Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -16,6 +16,8 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -142,14 +144,23 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <label className="block text-xs sm:text-sm font-medium text-black mb-2">
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full px-3 sm:px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
-
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-3 sm:px-4 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-[#FF7F00] focus:ring-1 focus:ring-[#FF7F00]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between mb-6 text-xs sm:text-sm">
