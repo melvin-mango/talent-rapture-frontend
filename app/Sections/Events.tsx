@@ -373,10 +373,18 @@ export default function Events() {
         <LoginModal
           isOpen={showLoginModal}
           onClose={() => setShowLoginModal(false)}
+          onOpenRegisterModal={() => {
+            setShowLoginModal(false);
+            setShowRegisterModal(true);
+          }}
         />
         <RegisterModal
           isOpen={showRegisterModal}
           onClose={() => setShowRegisterModal(false)}
+          onOpenLoginModal={() => {
+            setShowRegisterModal(false);
+            setShowLoginModal(true);
+          }}
         /> 
         </div>
            );

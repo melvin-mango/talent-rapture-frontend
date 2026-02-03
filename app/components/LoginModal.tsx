@@ -8,9 +8,10 @@ import { toast } from "react-toastify";
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenRegisterModal: () => void;
 }
 
-export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose, onOpenRegisterModal }: LoginModalProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -186,7 +187,14 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
           <p className="text-center text-xs sm:text-sm text-gray-600 mt-4">
             Don't have an account?{" "}
-            <button type="button" className="text-[#FF7F00] font-semibold hover:underline">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenRegisterModal();
+              }}
+              className="text-[#FF7F00] font-semibold hover:underline"
+            >
               Join Us
             </button>
           </p>
