@@ -167,7 +167,7 @@ export default function Navbar(){
                                 className="w-full items-center justify-center flex p-2 gap-2 rounded-lg border border-gray-300 hover:bg-gray-200"
                                 onClick={() => {
                                   // Navigate to profile settings
-                                  window.location.href = "/profile";
+                                  /*window.location.href = "/profile";*/
                                 }}
                             >
                               <Settings size={16} className="text-gray-700" />
@@ -330,7 +330,7 @@ export default function Navbar(){
                                 className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-gray-100 border-b border-gray-200 transition-colors"
                                 onClick={() => {
                                   setIsProfileMenuOpen(false);
-                                  window.location.href = "/profile";
+                                  /*window.location.href = "/profile";*/
                                 }}
                             >
                               <Settings size={18} className="text-[#FF7F00]" />
