@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, LucideTwitter, Mail, Phone, Twitch, Twitter, X, XIcon, Youtube} from "lucide-react";
+import { Mail, Phone} from "lucide-react";
+import { FaWhatsapp, FaYoutube, FaFacebookF, FaInstagram, FaTiktok, FaPhone, FaEnvelope, } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
 export default function Footer() {
     return(
         <div className="w-full bg-black flex flex-col items-center justify-center">
@@ -15,14 +18,14 @@ export default function Footer() {
                         <div className="text-white text-xl font-bold ">Our Contacts</div>
                     </div>
                     <div className="w-full pl-2 flex flex-col gap-y-3">
-                        <div className="w-full flex items-center gap-x-2">
-                            <Phone className="text-xs"/>
+                        <Link href="tel:+254722270912" className="w-full flex items-center gap-x-2">
+                            <HiOutlinePhone className="text-lg"/>
                             <p className="text-sm">+254 722270912</p>
-                        </div>
-                        <div className="w-full flex items-center gap-x-2">
-                            <Mail className="text-xs"/>
-                            <p className="text-sm">info@talentrapture.com</p>
-                        </div>
+                        </Link>
+                        <Link href="mailto:talentrapture@gmail.com" className="w-full flex items-center gap-x-2">
+                            <HiOutlineMail className="text-lg"/>
+                            <p className="text-sm">talentrapture@gmail.com</p>
+                        </Link>
                     </div>
                     </div>
                 </div>
@@ -32,18 +35,24 @@ export default function Footer() {
                         <div className="h-6 w-1 bg-white"></div>
                         <div className="text-white text-xl font-bold ">Our Socials</div>
                     </div>
-                    <div className="w-full pl-2 flex items-center justify-between gap-x-5">
-                        <Link href="" >
-                            <Facebook className="text-xs"/>
+                    <div className="w-full pl-2 flex items-center justify-between gap-x-3">
+                        <Link href="https://www.facebook.com/people/Talent-Rapture/61584519691258/" >
+                            <FaFacebookF className="text-lg"/>
                         </Link>
-                        <Link href="" >
-                            <Instagram className="text-xs"/>
+                        <Link href="https://www.instagram.com/talentrapture/" >
+                            <FaInstagram className="text-lg"/>
                         </Link>
-                        <Link href="" >
-                            <Youtube className="text-xs"/>
+                        <Link href="https://www.youtube.com/@TalentRapture" >
+                            <FaYoutube className="text-lg"/>
                         </Link>
-                        <Link href="" >
-                            <Twitter className="text-xs"/>
+                        <Link href="https://x.com/_TalentRapture" >
+                            <FaXTwitter className="text-lg"/>
+                        </Link>
+                        <Link href="https://www.tiktok.com/@talentrapture" >
+                            <FaTiktok className="text-lg"/>
+                        </Link>
+                        <Link href="https://wa.me/254722270912" >
+                            <FaWhatsapp className="text-lg"/>
                         </Link>
                     </div>
                     </div>
