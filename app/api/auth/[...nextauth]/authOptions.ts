@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
           if (!callbackResponse.ok) {
             const errorText = await callbackResponse.text();
             console.error("Google callback failed:", errorText);
-            throw new Error(`Failed to create or fetch user from Strapi: ${errorText}`);
+            throw new Error(`Failed to create or fetch user: ${errorText}`);
           }
 
           const callbackData = await callbackResponse.json();

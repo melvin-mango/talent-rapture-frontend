@@ -7,11 +7,11 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 export async function GET(request: NextRequest) {
   try {
     if (!STRAPI_URL) {
-      console.error('Strapi URL is not configured');
+      console.error('Backend URL is not configured');
       return NextResponse.json(
         {
           success: false,
-          error: "Strapi URL is not configured",
+          error: "Backend URL is not configured",
         } as ApiResponse<null>,
         { status: 500 }
       );
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to fetch events from Strapi",
+          error: errorData.error?.message || "Failed to fetch events ",
         } as ApiResponse<null>,
         { status: strapiResponse.status }
       );

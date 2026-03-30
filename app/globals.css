@@ -141,6 +141,12 @@ html::-webkit-scrollbar {
   background-size:cover;
 }
 
+.accomodation:hover{
+  background: url('/img/accomodation.jpg');
+   background-position:center;
+  background-size:cover;
+}
+
 
 
 

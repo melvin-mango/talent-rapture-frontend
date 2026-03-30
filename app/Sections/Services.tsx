@@ -2,7 +2,7 @@
 import { useState } from "react"
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBriefcase, faEye, faFile, faMicrophone, faPaste, faPersonChalkboard, faPersonRays, faRankingStar, faUserTie } from "@fortawesome/free-solid-svg-icons";
+import { faBriefcase, faEye, faFile, faMicrophone, faPaste, faPersonChalkboard, faPersonRays, faRankingStar, faUserTie, faHouse } from "@fortawesome/free-solid-svg-icons";
 export default function Services () {
     const [activeTab, setActiveTab] = useState<string | null>(null);
     let hideTimeout:NodeJS.Timeout | null = null;
@@ -192,6 +192,19 @@ export default function Services () {
                             />
                             <p className="text-lg font-bold text-black">Job Interview Preparation</p>
                             <p className="text-sm md:text-base">Preparing participants to succeed in job interviews, with a focus on showcasing their creative talents.</p>
+                        
+                        </div>
+                    </div>
+
+                    <div className="service accomodation inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
+                         <div className="absolute serv w-full p-3 h-full items-center justify-center flex flex-col gap-y-4 text-center rounded-4xl ">
+                            <FontAwesomeIcon
+                            icon={faHouse}
+                            className="w-5"
+                            style={{ fontSize: "3.0rem" }}
+                            />
+                            <p className="text-lg font-bold text-black">Accomodation for Creatives</p>
+                            <p className="text-sm md:text-base">We offer stylish, fully furnished accommodation designed for comfort, productivity, and creative living.</p>
                         
                         </div>
                     </div>
