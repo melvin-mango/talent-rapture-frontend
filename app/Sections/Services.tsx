@@ -2,7 +2,7 @@
 import { useState } from "react"
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBriefcase, faEye, faFile, faMicrophone, faPaste, faPersonChalkboard, faPersonRays, faRankingStar, faUserTie, faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faBriefcase, faEye, faFile, faMicrophone, faPaste, faPersonChalkboard, faPersonRays, faRankingStar, faUserTie, faHouse, faCoins, faPhotoFilm, faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 export default function Services () {
     const [activeTab, setActiveTab] = useState<string | null>(null);
     let hideTimeout:NodeJS.Timeout | null = null;
@@ -29,13 +29,13 @@ export default function Services () {
                 <div className={`h-[400px] cursor-pointer overflow-y-scroll no-scrollbar w-full flex items-center justify-center transition-all duration-300 ease-in-out ${activeTab==="international"? " text-black bg-[#FF7F00]":"text-[#FF7F00] bg-black"}`}
                 onMouseOver={()=> handleMouseOver("international")}
                 onMouseOut={handleMouseOut}>
-                    <div className={`text-center p-2 text-[#FF7F00] text-3xl ${activeTab==="international"?" hidden opacity-0 invisible":"opacity-100 visible"}`}>International Creative Arts Festivals</div>
+                    <div className={`text-center p-2 text-[#FF7F00] text-3xl ${activeTab==="international"?" hidden opacity-0 invisible":"opacity-100 visible"}`}>Creative Accommodation & Talent Spaces</div>
                     <div className={`h-full w-full flex flex-col gap-y-3 items-center p-2 justify-start text-3xl ${activeTab==="international"?"opacity-100 visible":"hidden opacity-0 invisible"}`}>
                         <div className="text-xl font-semibold text-center text-black">
-                            International Creative Arts Festivals
+                            Creative Accommodation & Talent Spaces
                         </div>
                         <div className="text-base text-justify text-black">
-                            We appreciate the importance of interaction with like-minded and similarly skilled people in the creative spaces around and beyond Kenya. We therefore invite creative artists to lead our workshops and augment our performances for a blend that benefits young talent in Kenya. Thus, we identify, collate international festivals that local creatives can participate in to enhance mutual learning and benefits through creative performances and works. We thus connect local artists to the world.
+                            We provide tailored accommodation solutions designed to support creatives in their work and growth. Through our Talent Rapture initiative, we offer comfortable and inspiring spaces that bring together artists, innovators, and teams in one environment. Our accommodation services support corporate housing, creative production needs, talent development and training, access to shooting locations, and curated retreat spaces, creating a seamless experience where creatives can live, collaborate, and produce their best work.
                         </div>
                         
                     </div>
@@ -100,7 +100,7 @@ export default function Services () {
                             style={{ fontSize: "3.0rem" }}
                             />
                             <p className="text-lg font-bold text-black">Personal Branding</p>
-                            <p className="text-sm md:text-base">Guiding participants to build and maintain a personal brand aligning with their goals.</p>
+                            <p className="text-sm md:text-base">Guiding participants to build and maintain a personal brand aligning with their creative talents and goals.</p>
                         
                         </div>
                     </div>
@@ -125,8 +125,8 @@ export default function Services () {
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">CV Writing</p>
-                            <p className="text-sm md:text-base">Providing guidance on crafting compelling CVs that highlight creative skills and experiences.</p>
+                            <p className="text-lg font-bold text-black">CV Writing & Portfolio Development</p>
+                            <p className="text-sm md:text-base">Providing guidance on crafting compelling CVs that highlight creative skills and experiences for creative talents.</p>
                         
                         </div>
                     </div>
@@ -138,7 +138,7 @@ export default function Services () {
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">Presentation skills</p>
+                            <p className="text-lg font-bold text-black">Presentation Skills</p>
                             <p className="text-sm md:text-base">Training on how to present ideas and work in a clear, engaging, and professional manner.</p>
                         
                         </div>
@@ -151,7 +151,7 @@ export default function Services () {
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">Professional etiquette</p>
+                            <p className="text-lg font-bold text-black">Professional Etiquette</p>
                             <p className="text-sm md:text-base">Teaching norms and behaviors expected in professional and creative environments.</p>
                         
                         </div>
@@ -164,7 +164,7 @@ export default function Services () {
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">Leadership skills</p>
+                            <p className="text-lg font-bold text-black">Leadership Skills</p>
                             <p className="text-sm md:text-base">Fostering the ability to lead projects and inspire others within the creative sector.</p>
                         
                         </div>
@@ -177,7 +177,7 @@ export default function Services () {
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">Brand presence</p>
+                            <p className="text-lg font-bold text-black">Brand Presence</p>
                             <p className="text-sm md:text-base">Improving participants' ability to create and maintain a strong presence across platforms.</p>
                         
                         </div>
@@ -196,15 +196,41 @@ export default function Services () {
                         </div>
                     </div>
 
-                    <div className="service accomodation inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
+                    <div className="service creative-space inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
                          <div className="absolute serv w-full p-3 h-full items-center justify-center flex flex-col gap-y-4 text-center rounded-4xl ">
                             <FontAwesomeIcon
-                            icon={faHouse}
+                            icon={faLayerGroup}
                             className="w-5"
                             style={{ fontSize: "3.0rem" }}
                             />
-                            <p className="text-lg font-bold text-black">Accomodation for Creatives</p>
-                            <p className="text-sm md:text-base">We offer stylish, fully furnished accommodation designed for comfort, productivity, and creative living.</p>
+                            <p className="text-lg font-bold text-black">Creative Space and Productivity</p>
+                            <p className="text-sm md:text-base">We promote environments and habits that enhance focus, creativity, and efficiency, helping individuals and teams work more effectively.</p>
+                        
+                        </div>
+                    </div>
+
+                     <div className="service creative-economy inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
+                         <div className="absolute serv w-full p-3 h-full items-center justify-center flex flex-col gap-y-4 text-center rounded-4xl ">
+                            <FontAwesomeIcon
+                            icon={faCoins}
+                            className="w-5"
+                            style={{ fontSize: "3.0rem" }}
+                            />
+                            <p className="text-lg font-bold text-black">Creative Economy</p>
+                            <p className="text-sm md:text-base">We empower creatives to turn their talents into sustainable opportunities and actively contribute to economic growth.</p>
+                        
+                        </div>
+                    </div>
+
+                     <div className="service digital-content inner relative w-full h-[250px] md:h-[300px] rounded-4xl">
+                         <div className="absolute serv w-full p-3 h-full items-center justify-center flex flex-col gap-y-4 text-center rounded-4xl ">
+                            <FontAwesomeIcon
+                            icon={faPhotoFilm}
+                            className="w-5"
+                            style={{ fontSize: "3.0rem" }}
+                            />
+                            <p className="text-lg font-bold text-black">Digital Content Creation</p>
+                            <p className="text-sm md:text-base">We equip creatives with the skills to produce engaging, impactful content that connects with diverse audiences.</p>
                         
                         </div>
                     </div>

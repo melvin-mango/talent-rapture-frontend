@@ -66,6 +66,7 @@ html::-webkit-scrollbar {
 .serv {
   background: #F6E6C2;
   color: #000;
+  cursor: pointer;
 }
 
  .serv button{
@@ -141,8 +142,20 @@ html::-webkit-scrollbar {
   background-size:cover;
 }
 
-.accomodation:hover{
-  background: url('/img/accomodation.jpg');
+.creative-space:hover{
+  background: url('/img/creative-space.jpg');
+   background-position:center;
+  background-size:cover;
+}
+
+.creative-economy:hover{
+  background: url('/img/creative-economy.jpg');
+   background-position:center;
+  background-size:cover;
+}
+
+.digital-content:hover{
+  background: url('/img/digital-content.jpg');
    background-position:center;
   background-size:cover;
 }

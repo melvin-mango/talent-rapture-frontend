@@ -58,7 +58,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
                 <ul className="flex gap-2 mb-4 w-full items-start justify-start">
                     <li>
                         <button
-                            className={`p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
+                            className={`cursor-pointer p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
                                 activeTab === "mission" ? "bg-[#FF7F00] text-black" : "bg-transparent text-[#FF7F00] hover:bg-[#FF7F00] hover:text-black"
                             }`}
                             onMouseOver={() => handleMouseOver("mission")}
@@ -70,7 +70,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
                     </li>
                     <li>
                         <button
-                            className={`p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
+                            className={`cursor-pointer p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
                                 activeTab === "vision" ? "bg-[#FF7F00] text-black" : "bg-transparent text-[#FF7F00] hover:bg-[#FF7F00] hover:text-black"
                             }`}
                             onMouseOver={() => handleMouseOver("vision")}
@@ -82,7 +82,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
                     </li>
                     <li>
                         <button
-                            className={`p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
+                            className={`cursor-pointer p-2 md:px-4 md:py-2 rounded-3xl border-2 border-[#FF7F00] transition-all duration-200 cursor-pointer ${
                                 activeTab === "corevalues" ? "bg-[#FF7F00] text-black" : "bg-transparent text-[#FF7F00] hover:bg-[#FF7F00] hover:text-black"
                             }`}
                             onMouseOver={() => handleMouseOver("corevalues")}
@@ -112,7 +112,7 @@ const [activeTab, setActiveTab] = useState<string | null>(null);
                         onMouseOver={() => handleMouseOver("vision")}
                         onMouseOut={handleMouseOut}
                     >
-                        <p className="text-[#FF7F00] text-lg text-center font-semibold flex items-center justify-center w-full h-full">To unlock every creative potential for development of the self and our surroundings.</p>
+                        <p className="text-[#FF7F00] text-lg text-center font-semibold flex items-center justify-center w-full h-full">To become a leading provider of integrated creative and lifestyle solutions in Africa..</p>
                     </div>
                     {/* Core Values */}
                     <div
