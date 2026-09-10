@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     console.log("Sending contact message to:", fetchUrl);
     console.log("Contact data:", { email: body.email, message: body.message.substring(0, 50) + "..." });
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,21 +75,21 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Failed to send message",
         },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const responseData = await strapiResponse.json();
+    const responseData = await payloadResponse.json();
     console.log("Contact message saved successfully");
 
     return NextResponse.json(

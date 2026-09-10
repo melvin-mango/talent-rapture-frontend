@@ -17,39 +17,39 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${PAYLOAD_URL}/api/events?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name&sort=date:desc`;
+    const fetchUrl = `${PAYLOAD_URL}/api/events?depth=1&sort=-date`;
     console.log('Fetching from Strapi:', fetchUrl);
 
     // Fetch events from Strapi with media relations
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    console.log('Strapi response status:', strapiResponse.status);
+    console.log('Strapi response status:', payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error('Strapi error:', errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Failed to fetch events ",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const eventsData: EventsResponse = await strapiResponse.json();
-    console.log('Events retrieved:', eventsData.data?.length || 0);
+    const eventsData: EventsResponse = await payloadResponse.json();
+    console.log('Events retrieved:', eventsData.docs?.length || 0);
 
     return NextResponse.json(
       {
         success: true,
-        data: eventsData.data,
-      } as ApiResponse<EventsResponse["data"]>,
+        data: eventsData.docs,
+      } as ApiResponse<EventsResponse["docs"]>,
       { status: 200 }
     );
   } catch (error) {

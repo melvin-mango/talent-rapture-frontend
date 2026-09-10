@@ -57,28 +57,27 @@ export interface MediaFile {
 // Event type matching the Strapi schema
 export interface Event {
   id: number;
-  documentId: string;
   title: string;
+  date: string;
   time: string;
   location: string;
-  date: string;
-  image?: MediaFile;
-  flyer?: MediaFile;
-  publishedAt: string;
+  image: MediaFile | null;
+  flyer: MediaFile | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface EventsResponse {
-  data: Event[];
-  meta?: {
-    pagination?: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
+  docs: Event[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
 }
 
 // Event Registration types

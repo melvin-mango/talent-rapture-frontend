@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
     
     console.log("Fetching registrations for user:", userId, "event:", eventId);
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -115,21 +115,21 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Failed to fetch registrations",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationsData: EventRegistrationsResponse = await strapiResponse.json();
+    const registrationsData: EventRegistrationsResponse = await payloadResponse.json();
     console.log("Registrations retrieved:", registrationsData.data?.length || 0);
 
     return NextResponse.json(
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
       users_permissions_user: body.userId,
     });
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -226,10 +226,10 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       console.error("Strapi response body:", JSON.stringify(errorData, null, 2));
       return NextResponse.json(
@@ -237,11 +237,11 @@ export async function POST(request: NextRequest) {
           success: false,
           error: errorData.error?.message || "Failed to create registration",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await strapiResponse.json();
+    const registrationData: { data: EventRegistration } = await payloadResponse.json();
     console.log("Registration created:", registrationData.data.id);
     console.log("Full registration data:", registrationData.data);
 

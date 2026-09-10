@@ -22,7 +22,7 @@ export async function GET(
     const { id } = await params;
 
     // Fetch specific event from Strapi with media relations
-    const strapiResponse = await fetch(
+    const payloadResponse = await fetch(
       `${PAYLOAD_URL}/api/events/${id}?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name`,
       {
         method: "GET",
@@ -32,18 +32,18 @@ export async function GET(
       }
     );
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json();
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json();
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Event not found",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const eventData: { data: Event } = await strapiResponse.json();
+    const eventData: { data: Event } = await payloadResponse.json();
 
     return NextResponse.json(
       {

@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Call Strapi login endpoint
-    const strapiResponse = await fetch(`${PAYLOAD_URL}/api/auth/local`, {
+    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/auth/local`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,17 +36,17 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json();
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json();
       const errorMessage = handleStrapiError(errorData.error || errorData);
 
       return NextResponse.json(
         { success: false, error: errorMessage },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const authData: AuthResponse = await strapiResponse.json();
+    const authData: AuthResponse = await payloadResponse.json();
 
     return NextResponse.json(
       {

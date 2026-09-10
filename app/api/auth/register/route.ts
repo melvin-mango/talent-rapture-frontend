@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Call Strapi registration endpoint
-    const strapiResponse = await fetch(`${PAYLOAD_URL}/api/auth/local/register`, {
+    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/auth/local/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,23 +47,23 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    if (!strapiResponse.ok) {
+    if (!payloadResponse.ok) {
       let errorData;
-      const contentType = strapiResponse.headers.get("content-type");
+      const contentType = payloadResponse.headers.get("content-type");
       
       try {
         if (contentType?.includes("application/json")) {
-          errorData = await strapiResponse.json();
+          errorData = await payloadResponse.json();
         } else {
-          errorData = await strapiResponse.text();
+          errorData = await payloadResponse.text();
         }
       } catch (parseError) {
-        errorData = `HTTP ${strapiResponse.status}`;
+        errorData = `HTTP ${payloadResponse.status}`;
       }
 
       console.error("Strapi registration error:", {
-        status: strapiResponse.status,
-        statusText: strapiResponse.statusText,
+        status: payloadResponse.status,
+        statusText: payloadResponse.statusText,
         body: errorData,
       });
 
@@ -78,11 +78,11 @@ export async function POST(request: NextRequest) {
           error: errorMessage || "Registration failed",
           debug: errorData,
         },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const authData: AuthResponse = await strapiResponse.json();
+    const authData: AuthResponse = await payloadResponse.json();
     console.log("User registered:", { id: authData.user.id, email: authData.user.email });
 
     // Update user with firstName and lastName if the fields exist in your Strapi schema

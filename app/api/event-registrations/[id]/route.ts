@@ -54,7 +54,7 @@ export async function GET(
     
     console.log("Fetching registration from:", fetchUrl);
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -64,21 +64,21 @@ export async function GET(
       },
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Registration not found",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await strapiResponse.json();
+    const registrationData: { data: EventRegistration } = await payloadResponse.json();
 
     return NextResponse.json(
       {
@@ -206,7 +206,7 @@ export async function PATCH(
     
     console.log("Updating registration at:", fetchUrl, "by user:", userId);
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -223,21 +223,21 @@ export async function PATCH(
       }),
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Failed to update registration",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await strapiResponse.json();
+    const registrationData: { data: EventRegistration } = await payloadResponse.json();
     console.log("Registration updated:", registrationData.data.id);
 
     return NextResponse.json(
@@ -356,7 +356,7 @@ export async function DELETE(
     
     console.log("Deleting registration at:", fetchUrl);
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -366,22 +366,22 @@ export async function DELETE(
       },
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Strapi response status:", payloadResponse.status);
     
-    if (!strapiResponse.ok) {
-      const errorText = await strapiResponse.text();
+    if (!payloadResponse.ok) {
+      const errorText = await payloadResponse.text();
       console.log("Strapi response body:", errorText);
     }
 
-    if (!strapiResponse.ok && strapiResponse.status !== 204) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
+    if (!payloadResponse.ok && payloadResponse.status !== 204) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
       console.error("Strapi error:", errorData);
       return NextResponse.json(
         {
           success: false,
           error: errorData.error?.message || "Failed to delete registration",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
