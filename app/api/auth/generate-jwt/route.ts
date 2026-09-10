@@ -2,7 +2,7 @@
 // This endpoint generates a JWT token for Google users who don't have passwords
 import { NextRequest, NextResponse } from "next/server";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 
 export async function POST(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Fetch user by email
     const userResponse = await fetch(
-      `${STRAPI_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`,
+      `${PAYLOAD_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`,
       {
         method: "GET",
         headers: {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token using Strapi's internal mechanism
     // We'll use the admin endpoint with provider token generation
-    const tokenResponse = await fetch(`${STRAPI_URL}/api/auth/callback/google`, {
+    const tokenResponse = await fetch(`${PAYLOAD_URL}/api/auth/callback/google`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     // This requires jsonwebtoken library or we can ask frontend to handle it differently
     
     // Actually, let's try a different approach: use the login endpoint with admin credentials
-    const adminLoginResponse = await fetch(`${STRAPI_URL}/api/auth/local`, {
+    const adminLoginResponse = await fetch(`${PAYLOAD_URL}/api/auth/local`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

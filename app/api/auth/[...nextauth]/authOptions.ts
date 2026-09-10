@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { handleStrapiError } from "@/lib/utils";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,7 +21,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const response = await fetch(`${STRAPI_URL}/api/auth/local`, {
+          const response = await fetch(`${PAYLOAD_URL}/api/auth/local`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
           const data = await response.json();
 
           // Fetch full user profile to get all fields including firstName, lastName
-          const meResponse = await fetch(`${STRAPI_URL}/api/users/me`, {
+          const meResponse = await fetch(`${PAYLOAD_URL}/api/users/me`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 
 interface ContactRequest {
@@ -11,7 +11,7 @@ interface ContactRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/contacts`;
+    const fetchUrl = `${PAYLOAD_URL}/api/contacts`;
 
     console.log("Sending contact message to:", fetchUrl);
     console.log("Contact data:", { email: body.email, message: body.message.substring(0, 50) + "..." });

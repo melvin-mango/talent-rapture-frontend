@@ -95,7 +95,7 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
 
         setIsDownloading(true);
         try {
-            const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+            const strapiUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL;
             const flyerUrl = event.flyer.url.startsWith('http') 
                 ? event.flyer.url 
                 : `${strapiUrl}${event.flyer.url}`;
@@ -159,7 +159,7 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
     // Get image URL
     const getImageUrl = () => {
         if (!event.image?.url) return '/img/abti2.jpg';
-        const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+        const strapiUrl = process.env.NEXT_PUBLIC_PAYLOAD_URL;
         return event.image.url.startsWith('http') 
             ? event.image.url 
             : `${strapiUrl}${event.image.url}`;

@@ -2,14 +2,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Event, ApiResponse } from "@/lib/types";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -23,7 +23,7 @@ export async function GET(
 
     // Fetch specific event from Strapi with media relations
     const strapiResponse = await fetch(
-      `${STRAPI_URL}/api/events/${id}?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name`,
+      `${PAYLOAD_URL}/api/events/${id}?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name`,
       {
         method: "GET",
         headers: {

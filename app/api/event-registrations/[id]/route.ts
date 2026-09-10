@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventRegistration, ApiResponse } from "@/lib/types";
 import jwt from "jsonwebtoken";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 
@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 async function verifyOwnership(registrationId: string, userId: string): Promise<boolean> {
   try {
     const response = await fetch(
-      `${STRAPI_URL}/api/event-registrations/${registrationId}?populate[users_permissions_user][fields][0]=id`,
+      `${PAYLOAD_URL}/api/event-registrations/${registrationId}?populate[users_permissions_user][fields][0]=id`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -50,7 +50,7 @@ export async function GET(
 
     const { id } = await params;
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations/${id}?populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email`;
     
     console.log("Fetching registration from:", fetchUrl);
 
@@ -105,7 +105,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -169,7 +169,7 @@ export async function PATCH(
     const body = await request.json();
 
     // Verify user owns this registration by fetching it with user filter
-    const verifyUrl = `${STRAPI_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -202,7 +202,7 @@ export async function PATCH(
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations/${id}`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}`;
     
     console.log("Updating registration at:", fetchUrl, "by user:", userId);
 
@@ -265,7 +265,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -328,7 +328,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Verify user owns this registration by fetching it with user filter
-    const verifyUrl = `${STRAPI_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -352,7 +352,7 @@ export async function DELETE(
 
     console.log("Delete request received for ID:", id, "by user:", userId);
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations/${id}`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}`;
     
     console.log("Deleting registration at:", fetchUrl);
 

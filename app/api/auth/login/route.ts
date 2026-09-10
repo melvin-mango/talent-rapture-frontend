@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { LoginRequest, ApiResponse, AuthResponse } from "@/lib/types";
 import { handleStrapiError } from "@/lib/utils";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         { success: false, error: "Strapi URL is not configured" },
         { status: 500 }
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Call Strapi login endpoint
-    const strapiResponse = await fetch(`${STRAPI_URL}/api/auth/local`, {
+    const strapiResponse = await fetch(`${PAYLOAD_URL}/api/auth/local`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

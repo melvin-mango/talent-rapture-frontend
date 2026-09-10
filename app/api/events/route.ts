@@ -2,11 +2,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { EventsResponse, ApiResponse } from "@/lib/types";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function GET(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       console.error('Backend URL is not configured');
       return NextResponse.json(
         {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/events?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name&sort=date:desc`;
+    const fetchUrl = `${PAYLOAD_URL}/api/events?populate[image][fields][0]=url&populate[image][fields][1]=name&populate[flyer][fields][0]=url&populate[flyer][fields][1]=name&sort=date:desc`;
     console.log('Fetching from Strapi:', fetchUrl);
 
     // Fetch events from Strapi with media relations

@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventRegistration, EventRegistrationRequest, EventRegistrationsResponse, ApiResponse } from "@/lib/types";
 import jwt from "jsonwebtoken";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 
 // GET - Fetch user's registrations for a specific event (filtered by current user)
 export async function GET(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch ONLY the current user's registrations for this event
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations?filters[event][documentId][$eq]=${eventId}&filters[users_permissions_user][id][$eq]=${userId}&populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email&sort=createdAt:desc`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations?filters[event][documentId][$eq]=${eventId}&filters[users_permissions_user][id][$eq]=${userId}&populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email&sort=createdAt:desc`;
     
     console.log("Fetching registrations for user:", userId, "event:", eventId);
 
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
 // POST - Create a new event registration
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations`;
     
     console.log("Creating registration at:", fetchUrl);
     console.log("Registration data:", {

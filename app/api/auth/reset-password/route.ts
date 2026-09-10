@@ -1,7 +1,7 @@
 // app/api/auth/reset-password/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     // Find user with matching reset token
     const userResponse = await fetch(
-      `${STRAPI_URL}/api/users?filters[resetPasswordToken][$eq]=${encodeURIComponent(token)}`,
+      `${PAYLOAD_URL}/api/users?filters[resetPasswordToken][$eq]=${encodeURIComponent(token)}`,
       {
         method: "GET",
         headers: {
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     console.log("Resetting password for user:", { id: user.id, email: user.email });
 
     // Update user password and clear reset token
-    const updateResponse = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
+    const updateResponse = await fetch(`${PAYLOAD_URL}/api/users/${user.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 
 export async function POST(request: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const googleAuthPassword = `google_${googleId}`;
 
     // Check if user exists in Strapi by searching with googleId
-    const checkResponse = await fetch(`${STRAPI_URL}/api/users?filters[googleId][$eq]=${googleId}`, {
+    const checkResponse = await fetch(`${PAYLOAD_URL}/api/users?filters[googleId][$eq]=${googleId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       console.log("Creating new user via auth/local/register");
       const username = email.split("@")[0] + Math.random().toString(36).substr(2, 5);
 
-      const registerResponse = await fetch(`${STRAPI_URL}/api/auth/local/register`, {
+      const registerResponse = await fetch(`${PAYLOAD_URL}/api/auth/local/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         console.log("STRAPI_ADMIN_TOKEN available:", !!process.env.STRAPI_ADMIN_TOKEN);
         if (user && process.env.STRAPI_ADMIN_TOKEN) {
           console.log("Updating user with firstName and lastName");
-          const updateResponse = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
+          const updateResponse = await fetch(`${PAYLOAD_URL}/api/users/${user.id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           console.log("User already exists, fetching by email:", email);
           try {
             const fetchUserResponse = await fetch(
-              `${STRAPI_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`,
+              `${PAYLOAD_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`,
               {
                 method: "GET",
                 headers: {
@@ -162,7 +162,7 @@ export async function POST(request: NextRequest) {
       console.log("Returning user - updating profile fields and generating JWT");
 
       // Update user with Google-specific fields ONLY
-      const updateUserResponse = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
+      const updateUserResponse = await fetch(`${PAYLOAD_URL}/api/users/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

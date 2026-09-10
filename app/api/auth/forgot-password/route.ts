@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user exists in Strapi
-    const userResponse = await fetch(`${STRAPI_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`, {
+    const userResponse = await fetch(`${PAYLOAD_URL}/api/users?filters[email][$eq]=${encodeURIComponent(email)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     console.log("Generated reset token for user:", { email, token: resetToken, expiry: resetTokenExpiry });
 
     // Update user with reset token in Strapi using built-in field names
-    const updateResponse = await fetch(`${STRAPI_URL}/api/users/${user.id}`, {
+    const updateResponse = await fetch(`${PAYLOAD_URL}/api/users/${user.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Send reset email via Strapi's email service
-    const emailResponse = await fetch(`${STRAPI_URL}/api/email/send`, {
+    const emailResponse = await fetch(`${PAYLOAD_URL}/api/email/send`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
