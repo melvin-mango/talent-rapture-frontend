@@ -1,18 +1,21 @@
 // lib/types.ts - Authentication and Event types
 
-export interface User {
+export interface Users {
   id: number;
   email: string;
   username: string;
   firstName: string;
   lastName: string;
   confirmed: boolean;
-  blocked: boolean;
+  sessions: Object;
+  updatedAt: string;
+  createdAt: string;
+  collection: string
 }
 
 export interface AuthResponse {
   jwt: string;
-  user: User;
+  user: Users;
 }
 
 export interface RegisterRequest {
@@ -88,7 +91,7 @@ export interface EventRegistration {
   physicalAddress: string;
   numberOfParticipants: number;
   event?: Event;
-  users_permissions_user?: User;
+  users_permissions_user?: Users;
   publishedAt: string;
   createdAt: string;
   updatedAt: string;
