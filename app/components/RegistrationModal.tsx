@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 interface RegistrationModalProps {
   isOpen: boolean;
-  eventId: string;
+  eventId: number;
   eventTitle: string;
   onClose: () => void;
   onSuccess: (registration: EventRegistration) => void;

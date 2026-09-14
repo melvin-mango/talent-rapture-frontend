@@ -3,18 +3,35 @@
 export interface Users {
   id: number;
   email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  confirmed: boolean;
-  sessions: Object;
-  updatedAt: string;
-  createdAt: string;
-  collection: string
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  confirmed?: boolean;
+  sessions?: Record<string, unknown>[] | null;
+  updatedAt?: string;
+  createdAt?: string;
+  collection?: string;
+  [key: string]: any;
+}
+
+export type User = Users;
+
+export interface UsersResponse {
+  docs: Users[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
 }
 
 export interface AuthResponse {
-  jwt: string;
+  jwt?: string | null;
+  token?: string | null;
   user: Users;
 }
 

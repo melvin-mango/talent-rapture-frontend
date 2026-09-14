@@ -55,8 +55,8 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
                 return;
             }
 
-            console.log('Fetching registrations with JWT for event:', event.documentId);
-            const response = await fetch(`/api/event-registrations?eventId=${event.documentId}`, {
+            console.log('Fetching registrations with JWT for event:', event.id);
+            const response = await fetch(`/api/event-registrations?eventId=${event.id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ const EventCard = ({ event, onLoginClick, onRegisterClick }: { event: Event; onL
             {/* Modals */}
             <RegistrationModal
                 isOpen={showRegistrationModal}
-                eventId={event.documentId}
+                eventId={event.id}
                 eventTitle={event.title}
                 onClose={() => setShowRegistrationModal(false)}
                 onSuccess={handleRegistrationSuccess}
@@ -308,7 +308,7 @@ export default function Events() {
             console.log('Events data received:', data);
             
             if (data.success && data.data) {
-                console.log('Events with IDs:', data.data.map(e => ({ id: e.id, documentId: e.documentId, title: e.title })));
+                console.log('Events with IDs:', data.data.map(e => ({ id: e.id, title: e.title })));
                 setEvents(data.data);
             } else {
                 setError(data.error || 'Failed to load events');
