@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
-const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 
 interface ContactRequest {
   email: string;
@@ -54,7 +53,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${PAYLOAD_URL}/api/contacts`;
+    const fetchUrl = `${PAYLOAD_URL}/api/contact-submissions`;
 
     console.log("Sending contact message to:", fetchUrl);
     console.log("Contact data:", { email: body.email, message: body.message.substring(0, 50) + "..." });
@@ -63,27 +62,22 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(STRAPI_ADMIN_TOKEN && {
-          Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
-        }),
       },
       body: JSON.stringify({
-        data: {
-          email: body.email,
-          message: body.message,
-        },
+        email: body.email.trim(),
+        message: body.message.trim(),
       }),
     });
 
-    console.log("Strapi response status:", payloadResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
     if (!payloadResponse.ok) {
       const errorData = await payloadResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to send message",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to send message",
         },
         { status: payloadResponse.status }
       );
@@ -95,7 +89,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        data: responseData.data,
+        data: responseData.doc || responseData.data || responseData,
         message: "Your message has been sent successfully!",
       },
       { status: 201 }

@@ -1,10 +1,9 @@
 // app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { RegisterRequest, ApiResponse, AuthResponse } from "@/lib/types";
+import { RegisterRequest, AuthResponse, Users } from "@/lib/types";
 import { handleStrapiError } from "@/lib/utils";
 
 const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
-const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,8 +33,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call Strapi registration endpoint
-    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/auth/local/register`, {
+    // Create the user through Payload's auth collection endpoint.
+    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +42,9 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         email: body.email,
         password: body.password,
-        username: body.email.split("@")[0], // Use email prefix as username
+        username: body.email.split("@")[0],
+        firstName: body.firstName,
+        lastName: body.lastName,
       }),
     });
 
@@ -82,38 +83,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const authData: AuthResponse = await payloadResponse.json();
-    console.log("User registered:", { id: authData.user.id, email: authData.user.email });
-
-    // Update user with firstName and lastName if the fields exist in your Strapi schema
-    if (body.firstName || body.lastName) {
-      console.log("Updating user with firstName and lastName:", { firstName: body.firstName, lastName: body.lastName });
-      const updateResponse = await fetch(
-        `${PAYLOAD_URL}/api/users/${authData.user.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...(STRAPI_ADMIN_TOKEN && {
-              Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
-            }),
-          },
-          body: JSON.stringify({
-            firstName: body.firstName,
-            lastName: body.lastName,
-          }),
-        }
-      );
-
-      if (updateResponse.ok) {
-        const updatedUser = await updateResponse.json();
-        console.log("User updated successfully:", { firstName: updatedUser.firstName, lastName: updatedUser.lastName });
-        authData.user = { ...authData.user, ...updatedUser };
-      } else {
-        const errorText = await updateResponse.text();
-        console.error("User update failed:", errorText);
-      }
-    }
+    const payloadData = await payloadResponse.json();
+    const user: Users = payloadData.user || payloadData.doc || payloadData;
+    const authData: AuthResponse = { user };
+    console.log("User registered:", { id: user.id, email: user.email });
 
     return NextResponse.json(
       {

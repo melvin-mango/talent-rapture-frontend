@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 async function verifyOwnership(registrationId: string, userId: string): Promise<boolean> {
   try {
     const response = await fetch(
-      `${PAYLOAD_URL}/api/event-registrations/${registrationId}?populate[users_permissions_user][fields][0]=id`,
+      `${PAYLOAD_URL}/api/event-registration/${registrationId}?depth=0`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -24,8 +24,8 @@ async function verifyOwnership(registrationId: string, userId: string): Promise<
 
     if (!response.ok) return false;
 
-    const data: { data: any } = await response.json();
-    return data.data?.users_permissions_user?.id?.toString() === userId;
+    const data = await response.json();
+    return data.user?.toString() === userId;
   } catch (error) {
     console.error("Ownership verification error:", error);
     return false;
@@ -50,7 +50,7 @@ export async function GET(
 
     const { id } = await params;
 
-    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registration/${id}?depth=1`;
     
     console.log("Fetching registration from:", fetchUrl);
 
@@ -64,26 +64,26 @@ export async function GET(
       },
     });
 
-    console.log("Strapi response status:", payloadResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
     if (!payloadResponse.ok) {
       const errorData = await payloadResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Registration not found",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Registration not found",
         } as ApiResponse<null>,
         { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await payloadResponse.json();
+    const registrationData = await payloadResponse.json();
 
     return NextResponse.json(
       {
         success: true,
-        data: registrationData.data,
+        data: registrationData.doc || registrationData.data || registrationData,
       } as ApiResponse<EventRegistration>,
       { status: 200 }
     );
@@ -169,7 +169,7 @@ export async function PATCH(
     const body = await request.json();
 
     // Verify user owns this registration by fetching it with user filter
-    const verifyUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyUrl = `${PAYLOAD_URL}/api/event-registration/${id}?depth=0`;
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -180,8 +180,8 @@ export async function PATCH(
       },
     });
 
-    const verifyData: { data: any } = await verifyResponse.json();
-    if (!verifyResponse.ok || !verifyData.data) {
+    const verifyData = await verifyResponse.json();
+    if (!verifyResponse.ok || verifyData.user?.toString() !== userId) {
       return NextResponse.json(
         {
           success: false,
@@ -202,7 +202,7 @@ export async function PATCH(
       );
     }
 
-    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registration/${id}`;
     
     console.log("Updating registration at:", fetchUrl, "by user:", userId);
 
@@ -215,35 +215,34 @@ export async function PATCH(
         }),
       },
       body: JSON.stringify({
-        data: {
-          ...(body.phone && { phone: body.phone }),
-          ...(body.physicalAddress && { physicalAddress: body.physicalAddress }),
-          ...(body.numberOfParticipants && { numberOfParticipants: body.numberOfParticipants }),
-        },
+        ...(body.phone && { phone: body.phone }),
+        ...(body.physicalAddress && { physicalAddress: body.physicalAddress }),
+        ...(body.numberOfParticipants && { numberOfParticipants: body.numberOfParticipants }),
       }),
     });
 
-    console.log("Strapi response status:", payloadResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
     if (!payloadResponse.ok) {
       const errorData = await payloadResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to update registration",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to update registration",
         } as ApiResponse<null>,
         { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await payloadResponse.json();
-    console.log("Registration updated:", registrationData.data.id);
+    const registrationData = await payloadResponse.json();
+    const registration = registrationData.doc || registrationData.data || registrationData;
+    console.log("Registration updated:", registration.id);
 
     return NextResponse.json(
       {
         success: true,
-        data: registrationData.data,
+        data: registration,
       } as ApiResponse<EventRegistration>,
       { status: 200 }
     );
@@ -328,7 +327,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Verify user owns this registration by fetching it with user filter
-    const verifyUrl = `${PAYLOAD_URL}/api/event-registrations/${id}?filters[users_permissions_user][id][$eq]=${userId}`;
+    const verifyUrl = `${PAYLOAD_URL}/api/event-registration/${id}?depth=0`;
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -339,8 +338,8 @@ export async function DELETE(
       },
     });
 
-    const verifyData: { data: any } = await verifyResponse.json();
-    if (!verifyResponse.ok || !verifyData.data) {
+    const verifyData = await verifyResponse.json();
+    if (!verifyResponse.ok || verifyData.user?.toString() !== userId) {
       return NextResponse.json(
         {
           success: false,
@@ -352,7 +351,7 @@ export async function DELETE(
 
     console.log("Delete request received for ID:", id, "by user:", userId);
 
-    const fetchUrl = `${PAYLOAD_URL}/api/event-registrations/${id}`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registration/${id}`;
     
     console.log("Deleting registration at:", fetchUrl);
 
@@ -366,20 +365,20 @@ export async function DELETE(
       },
     });
 
-    console.log("Strapi response status:", payloadResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
     
     if (!payloadResponse.ok) {
       const errorText = await payloadResponse.text();
-      console.log("Strapi response body:", errorText);
+      console.log("Payload response body:", errorText);
     }
 
     if (!payloadResponse.ok && payloadResponse.status !== 204) {
       const errorData = await payloadResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to delete registration",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to delete registration",
         } as ApiResponse<null>,
         { status: payloadResponse.status }
       );
