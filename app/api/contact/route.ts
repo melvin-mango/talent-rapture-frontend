@@ -1,8 +1,7 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 interface ContactRequest {
   email: string;
@@ -11,7 +10,7 @@ interface ContactRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -54,48 +53,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/contacts`;
+    const fetchUrl = `${PAYLOAD_URL}/api/contact-submissions`;
 
     console.log("Sending contact message to:", fetchUrl);
     console.log("Contact data:", { email: body.email, message: body.message.substring(0, 50) + "..." });
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(STRAPI_ADMIN_TOKEN && {
-          Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
-        }),
       },
       body: JSON.stringify({
-        data: {
-          email: body.email,
-          message: body.message,
-        },
+        email: body.email.trim(),
+        message: body.message.trim(),
       }),
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to send message",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to send message",
         },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const responseData = await strapiResponse.json();
+    const responseData = await payloadResponse.json();
     console.log("Contact message saved successfully");
 
     return NextResponse.json(
       {
         success: true,
-        data: responseData.data,
+        data: responseData.doc || responseData.data || responseData,
         message: "Your message has been sent successfully!",
       },
       { status: 201 }

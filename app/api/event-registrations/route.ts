@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { EventRegistration, EventRegistrationRequest, EventRegistrationsResponse, ApiResponse } from "@/lib/types";
 import jwt from "jsonwebtoken";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || "your-secret-key";
 
 // GET - Fetch user's registrations for a specific event (filtered by current user)
 export async function GET(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -101,11 +101,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch ONLY the current user's registrations for this event
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations?filters[event][documentId][$eq]=${eventId}&filters[users_permissions_user][id][$eq]=${userId}&populate[event][fields][0]=title&populate[users_permissions_user][fields][0]=email&sort=createdAt:desc`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registration?where[Event][equals]=${encodeURIComponent(eventId)}&where[user][equals]=${encodeURIComponent(userId)}&sort=-createdAt`;
     
     console.log("Fetching registrations for user:", userId, "event:", eventId);
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -115,27 +115,27 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to fetch registrations",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to fetch registrations",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationsData: EventRegistrationsResponse = await strapiResponse.json();
-    console.log("Registrations retrieved:", registrationsData.data?.length || 0);
+    const registrationsData = await payloadResponse.json();
+    console.log("Registrations retrieved:", registrationsData.docs?.length || 0);
 
     return NextResponse.json(
       {
         success: true,
-        data: registrationsData.data,
+        data: registrationsData.docs || [],
       } as ApiResponse<EventRegistrationsResponse["data"]>,
       { status: 200 }
     );
@@ -154,7 +154,7 @@ export async function GET(request: NextRequest) {
 // POST - Create a new event registration
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         {
           success: false,
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body: any = await request.json();
+    const body: EventRegistrationRequest & { userId: number } = await request.json();
 
     console.log("Received registration body:", body);
 
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fetchUrl = `${STRAPI_URL}/api/event-registrations`;
+    const fetchUrl = `${PAYLOAD_URL}/api/event-registration`;
     
     console.log("Creating registration at:", fetchUrl);
     console.log("Registration data:", {
@@ -204,10 +204,10 @@ export async function POST(request: NextRequest) {
       physicalAddress: body.physicalAddress,
       numberOfParticipants: body.numberOfParticipants,
       event: body.event,
-      users_permissions_user: body.userId,
+      user: body.userId,
     });
 
-    const strapiResponse = await fetch(fetchUrl, {
+    const payloadResponse = await fetch(fetchUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -216,39 +216,37 @@ export async function POST(request: NextRequest) {
         }),
       },
       body: JSON.stringify({
-        data: {
-          phone: body.phone,
-          physicalAddress: body.physicalAddress,
-          numberOfParticipants: body.numberOfParticipants,
-          event: body.event,
-          users_permissions_user: body.userId,
-        },
+        phone: body.phone,
+        physicalAddress: body.physicalAddress,
+        numberOfParticipants: body.numberOfParticipants,
+        Event: body.event,
+        user: body.userId,
       }),
     });
 
-    console.log("Strapi response status:", strapiResponse.status);
+    console.log("Payload response status:", payloadResponse.status);
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json().catch(() => ({}));
-      console.error("Strapi error:", errorData);
-      console.error("Strapi response body:", JSON.stringify(errorData, null, 2));
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json().catch(() => ({}));
+      console.error("Payload error:", errorData);
       return NextResponse.json(
         {
           success: false,
-          error: errorData.error?.message || "Failed to create registration",
+          error: errorData.errors?.[0]?.message || errorData.error?.message || "Failed to create registration",
         } as ApiResponse<null>,
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const registrationData: { data: EventRegistration } = await strapiResponse.json();
-    console.log("Registration created:", registrationData.data.id);
-    console.log("Full registration data:", registrationData.data);
+    const registrationData = await payloadResponse.json();
+    const registration = registrationData.doc || registrationData.data || registrationData;
+    console.log("Registration created:", registration.id);
+    console.log("Full registration data:", registration);
 
     return NextResponse.json(
       {
         success: true,
-        data: registrationData.data,
+        data: registration,
       } as ApiResponse<EventRegistration>,
       { status: 201 }
     );

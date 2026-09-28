@@ -1,18 +1,38 @@
 // lib/types.ts - Authentication and Event types
 
-export interface User {
+export interface Users {
   id: number;
   email: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  confirmed: boolean;
-  blocked: boolean;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  confirmed?: boolean;
+  sessions?: Record<string, unknown>[] | null;
+  updatedAt?: string;
+  createdAt?: string;
+  collection?: string;
+  [key: string]: any;
+}
+
+export type User = Users;
+
+export interface UsersResponse {
+  docs: Users[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
 }
 
 export interface AuthResponse {
-  jwt: string;
-  user: User;
+  jwt?: string | null;
+  token?: string | null;
+  user: Users;
 }
 
 export interface RegisterRequest {
@@ -57,28 +77,27 @@ export interface MediaFile {
 // Event type matching the Strapi schema
 export interface Event {
   id: number;
-  documentId: string;
   title: string;
+  date: string;
   time: string;
   location: string;
-  date: string;
-  image?: MediaFile;
-  flyer?: MediaFile;
-  publishedAt: string;
+  image: MediaFile | null;
+  flyer: MediaFile | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface EventsResponse {
-  data: Event[];
-  meta?: {
-    pagination?: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
+  docs: Event[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  nextPage: number | null;
+  page: number;
+  pagingCounter: number;
+  prevPage: number | null;
+  totalDocs: number;
+  totalPages: number;
 }
 
 // Event Registration types
@@ -89,7 +108,7 @@ export interface EventRegistration {
   physicalAddress: string;
   numberOfParticipants: number;
   event?: Event;
-  users_permissions_user?: User;
+  users_permissions_user?: Users;
   publishedAt: string;
   createdAt: string;
   updatedAt: string;

@@ -1,13 +1,13 @@
 // app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { LoginRequest, ApiResponse, AuthResponse } from "@/lib/types";
+import { LoginRequest, ApiResponse, AuthResponse, Users } from "@/lib/types";
 import { handleStrapiError } from "@/lib/utils";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         { success: false, error: "Strapi URL is not configured" },
         { status: 500 }
@@ -25,28 +25,30 @@ export async function POST(request: NextRequest) {
     }
 
     // Call Strapi login endpoint
-    const strapiResponse = await fetch(`${STRAPI_URL}/api/auth/local`, {
+    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        identifier: body.email, // Strapi uses 'identifier' for email/username
+        email: body.email,
         password: body.password,
       }),
     });
 
-    if (!strapiResponse.ok) {
-      const errorData = await strapiResponse.json();
-      const errorMessage = handleStrapiError(errorData.error || errorData);
+    console.log("Payload login status:", payloadResponse.status);
 
+    if (!payloadResponse.ok) {
+      const errorData = await payloadResponse.json();
+      const errorMessage = handleStrapiError(errorData.error || errorData);
+      console.error("Payload login error:", errorData);
       return NextResponse.json(
         { success: false, error: errorMessage },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const authData: AuthResponse = await strapiResponse.json();
+    const authData: Users = await payloadResponse.json();
 
     return NextResponse.json(
       {

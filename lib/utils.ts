@@ -1,15 +1,17 @@
 // lib/utils.ts - Authentication utilities
 
-import { AuthResponse, User } from "./types";
+import { AuthResponse, Users } from "./types";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 /**
  * Store JWT and user data in localStorage
  */
 export function storeAuthData(authData: AuthResponse) {
   if (typeof window !== "undefined") {
-    localStorage.setItem("jwt", authData.jwt);
+    if (authData.jwt) {
+      localStorage.setItem("jwt", authData.jwt);
+    }
     localStorage.setItem("user", JSON.stringify(authData.user));
   }
 }
@@ -17,7 +19,7 @@ export function storeAuthData(authData: AuthResponse) {
 /**
  * Get current user from localStorage
  */
-export function getCurrentUser(): User | null {
+export function getCurrentUser(): Users | null {
   if (typeof window === "undefined") return null;
 
   const user = localStorage.getItem("user");

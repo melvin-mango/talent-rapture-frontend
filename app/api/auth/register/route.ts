@@ -1,14 +1,13 @@
 // app/api/auth/register/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { RegisterRequest, ApiResponse, AuthResponse } from "@/lib/types";
+import { RegisterRequest, AuthResponse, Users } from "@/lib/types";
 import { handleStrapiError } from "@/lib/utils";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
-const STRAPI_ADMIN_TOKEN = process.env.STRAPI_ADMIN_TOKEN;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
 
 export async function POST(request: NextRequest) {
   try {
-    if (!STRAPI_URL) {
+    if (!PAYLOAD_URL) {
       return NextResponse.json(
         { success: false, error: "Strapi URL is not configured" },
         { status: 500 }
@@ -34,8 +33,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call Strapi registration endpoint
-    const strapiResponse = await fetch(`${STRAPI_URL}/api/auth/local/register`, {
+    // Create the user through Payload's auth collection endpoint.
+    const payloadResponse = await fetch(`${PAYLOAD_URL}/api/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,27 +42,29 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         email: body.email,
         password: body.password,
-        username: body.email.split("@")[0], // Use email prefix as username
+        username: body.email.split("@")[0],
+        firstName: body.firstName,
+        lastName: body.lastName,
       }),
     });
 
-    if (!strapiResponse.ok) {
+    if (!payloadResponse.ok) {
       let errorData;
-      const contentType = strapiResponse.headers.get("content-type");
+      const contentType = payloadResponse.headers.get("content-type");
       
       try {
         if (contentType?.includes("application/json")) {
-          errorData = await strapiResponse.json();
+          errorData = await payloadResponse.json();
         } else {
-          errorData = await strapiResponse.text();
+          errorData = await payloadResponse.text();
         }
       } catch (parseError) {
-        errorData = `HTTP ${strapiResponse.status}`;
+        errorData = `HTTP ${payloadResponse.status}`;
       }
 
       console.error("Strapi registration error:", {
-        status: strapiResponse.status,
-        statusText: strapiResponse.statusText,
+        status: payloadResponse.status,
+        statusText: payloadResponse.statusText,
         body: errorData,
       });
 
@@ -78,42 +79,14 @@ export async function POST(request: NextRequest) {
           error: errorMessage || "Registration failed",
           debug: errorData,
         },
-        { status: strapiResponse.status }
+        { status: payloadResponse.status }
       );
     }
 
-    const authData: AuthResponse = await strapiResponse.json();
-    console.log("User registered:", { id: authData.user.id, email: authData.user.email });
-
-    // Update user with firstName and lastName if the fields exist in your Strapi schema
-    if (body.firstName || body.lastName) {
-      console.log("Updating user with firstName and lastName:", { firstName: body.firstName, lastName: body.lastName });
-      const updateResponse = await fetch(
-        `${STRAPI_URL}/api/users/${authData.user.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...(STRAPI_ADMIN_TOKEN && {
-              Authorization: `Bearer ${STRAPI_ADMIN_TOKEN}`,
-            }),
-          },
-          body: JSON.stringify({
-            firstName: body.firstName,
-            lastName: body.lastName,
-          }),
-        }
-      );
-
-      if (updateResponse.ok) {
-        const updatedUser = await updateResponse.json();
-        console.log("User updated successfully:", { firstName: updatedUser.firstName, lastName: updatedUser.lastName });
-        authData.user = { ...authData.user, ...updatedUser };
-      } else {
-        const errorText = await updateResponse.text();
-        console.error("User update failed:", errorText);
-      }
-    }
+    const payloadData = await payloadResponse.json();
+    const user: Users = payloadData.user || payloadData.doc || payloadData;
+    const authData: AuthResponse = { user };
+    console.log("User registered:", { id: user.id, email: user.email });
 
     return NextResponse.json(
       {

@@ -95,7 +95,7 @@ export default function ViewRegistrationModal({
         return;
       }
 
-      const response = await fetch(`/api/event-registrations/${registration.documentId}`, {
+      const response = await fetch(`/api/event-registrations/${registration.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export default function ViewRegistrationModal({
     setIsLoading(true);
 
     try {
-      await onDelete(registration.documentId as any);
+      await onDelete(registration.id.toString());
       toast.success('Registration deleted successfully!');
       onClose();
     } catch (err) {

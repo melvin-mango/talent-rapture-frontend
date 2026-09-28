@@ -4,7 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { handleStrapiError } from "@/lib/utils";
 
-const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL;
+const AUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,13 +22,13 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const response = await fetch(`${STRAPI_URL}/api/auth/local`, {
+          const response = await fetch(`${PAYLOAD_URL}/api/users/login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              identifier: credentials.email,
+              email: credentials.email,
               password: credentials.password,
             }),
           });
@@ -39,30 +40,18 @@ export const authOptions: NextAuthOptions = {
           }
 
           const data = await response.json();
-
-          // Fetch full user profile to get all fields including firstName, lastName
-          const meResponse = await fetch(`${STRAPI_URL}/api/users/me`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${data.jwt}`,
-            },
-          });
-
-          let fullUser = data.user;
-          if (meResponse.ok) {
-            fullUser = await meResponse.json();
-          }
-
+          const fullUser = data.user || {};
+          const token = data.token || data.jwt || null;
           const firstName = fullUser.firstName || "";
           const lastName = fullUser.lastName || "";
 
           return {
-            id: fullUser.id.toString(),
+            id: fullUser.id?.toString() || "",
             email: fullUser.email,
             name: `${firstName} ${lastName}`.trim() || fullUser.email,
             image: fullUser.profileImage || null,
-            jwt: data.jwt,
+            jwt: token,
+            token,
             user: fullUser,
             firstName,
             lastName,
@@ -144,10 +133,10 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.jwt = (user as any).jwt;
-        token.user = (user as any).user;
-        token.firstName = (user as any).firstName;
-        token.lastName = (user as any).lastName;
+        token.jwt = (user as any).jwt ?? (user as any).token;
+        token.user = (user as any).user || user;
+        token.firstName = (user as any).firstName || (user as any).user?.firstName || "";
+        token.lastName = (user as any).lastName || (user as any).user?.lastName || "";
       }
       return token;
     },
@@ -176,9 +165,9 @@ export const authOptions: NextAuthOptions = {
   },
 
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: AUTH_SECRET,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: AUTH_SECRET,
 };
