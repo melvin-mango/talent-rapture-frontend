@@ -9,7 +9,7 @@ const AUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    // Strapi Credentials Provider
+    // Payload credentials provider
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -70,17 +70,30 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       async profile(profile) {
         try {
-          // Create or get user in Strapi via our callback API
-          const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-          const callbackResponse = await fetch(`${baseUrl}/api/auth/google/callback`, {
+          const googleProfile = profile as typeof profile & {
+            email_verified?: boolean;
+            given_name?: string;
+            family_name?: string;
+          };
+
+          if (googleProfile.email_verified !== true) {
+            throw new Error("Google account email is not verified");
+          }
+
+          if (!PAYLOAD_URL || !process.env.GOOGLE_AUTH_SECRET) {
+            throw new Error("Google authentication is not configured");
+          }
+
+          const callbackResponse = await fetch(`${PAYLOAD_URL}/api/google-auth`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.GOOGLE_AUTH_SECRET}`,
             },
             body: JSON.stringify({
               email: profile.email,
-              firstName: (profile as any).given_name || profile.name?.split(" ")[0] || "",
-              lastName: (profile as any).family_name || profile.name?.split(" ").slice(1).join(" ") || "",
+              firstName: googleProfile.given_name || profile.name?.split(" ")[0] || "",
+              lastName: googleProfile.family_name || profile.name?.split(" ").slice(1).join(" ") || "",
               image: profile.picture,
               googleId: profile.sub,
             }),
@@ -88,34 +101,33 @@ export const authOptions: NextAuthOptions = {
 
           if (!callbackResponse.ok) {
             const errorText = await callbackResponse.text();
-            console.error("Google callback failed:", errorText);
-            throw new Error(`Failed to create or fetch user: ${errorText}`);
+            console.error("Payload Google authentication failed:", errorText);
+            throw new Error(`Google authentication failed: ${errorText}`);
           }
 
           const callbackData = await callbackResponse.json();
-          const strapiUser = callbackData.data?.user || {};
-          const jwtToken = callbackData.data?.jwt || null;
+          const payloadUser = callbackData.user || {};
+          const jwtToken = callbackData.token || null;
           
-          console.log("Google callback returned:", {
+          console.log("Payload Google authentication returned:", {
             hasJwt: !!jwtToken,
-            jwtToken: jwtToken ? jwtToken.substring(0, 20) + "..." : null,
-            userId: strapiUser.id,
-            email: strapiUser.email,
+            userId: payloadUser.id,
+            email: payloadUser.email,
           });
 
           return {
-            id: strapiUser.id?.toString() || profile.sub,
-            email: strapiUser.email || profile.email,
-            name: strapiUser.firstName
-              ? `${strapiUser.firstName} ${strapiUser.lastName || ""}`.trim()
+            id: payloadUser.id?.toString() || profile.sub,
+            email: payloadUser.email || profile.email,
+            name: payloadUser.firstName
+              ? `${payloadUser.firstName} ${payloadUser.lastName || ""}`.trim()
               : profile.name,
-            image: profile.picture,
+            image: payloadUser.profileImage || profile.picture,
             provider: "google",
             googleId: profile.sub,
             jwt: jwtToken,
-            user: strapiUser,
-            firstName: strapiUser.firstName || "",
-            lastName: strapiUser.lastName || "",
+            user: payloadUser,
+            firstName: payloadUser.firstName || "",
+            lastName: payloadUser.lastName || "",
           };
         } catch (error) {
           console.error("Google profile error:", error);
@@ -135,6 +147,10 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.jwt = (user as any).jwt ?? (user as any).token;
         token.user = (user as any).user || user;
+        const payloadImage = (user as typeof user & {
+          user?: { profileImage?: string | null };
+        }).user?.profileImage;
+        token.picture = user.image || payloadImage || token.picture;
         token.firstName = (user as any).firstName || (user as any).user?.firstName || "";
         token.lastName = (user as any).lastName || (user as any).user?.lastName || "";
       }
@@ -153,6 +169,11 @@ export const authOptions: NextAuthOptions = {
         lastName,
         id: token.sub || (token.user as any)?.id,
         ...(token.user as any),
+        image:
+          token.picture ||
+          (token.user as { profileImage?: string | null } | undefined)?.profileImage ||
+          session.user?.image ||
+          null,
       };
       return session;
     },
